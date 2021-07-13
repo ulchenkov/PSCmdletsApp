@@ -54,17 +54,15 @@ namespace PSCmdlets
             StrNumber = 1 + random.Next(10000);
         }
 
-        public override string ToString()
-        {
-            return $"Id={Id}\n" +
-                $"Name: {FirstName} {MiddleName}. {LastName}\n" +
-                $"Date of Birth: {DateOfBirth.ToString("yyyy-MM-dd")} ({Age})\tGender: {Gender}\n\n" +
-                $"Address: {Street}, {City}, {State} {ZipCode}\n" +
-                $"Phone number: {PhoneNumber}\n\n" +
-                $"Account: {Account}\tRate: {Rate}\n" +
-                $"Amount: {Amount}\tBalance: {Balance}\n" +
-                $"LastUpdated: {LastUpdate.ToString("f")}\n\n" +
-                $"StrNumber: {StrNumber}";
-        }
+        public override string ToString() =>
+            $"Id={Id}\n" +
+            $"Name: {FirstName} {MiddleName}. {LastName}\n" +
+            $"Date of Birth: {DateOfBirth:yyyy-MM-dd} ({Age})\tGender: {Gender}\n\n" +
+            $"Address: {Street}, {City}, {State} {ZipCode}\n" +
+            $"Phone number: {PhoneNumber}\n\n" +
+            $"Account: {Account}\tRate: {Rate}\n" +
+            $"Amount: {Amount}\tBalance: {Balance}\n" +
+            $"LastUpdated: {LastUpdate:f}\n\n" +
+            $"StrNumber: {StrNumber}";
     }
 }

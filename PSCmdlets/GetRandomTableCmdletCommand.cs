@@ -7,7 +7,7 @@ using System.Text;
 namespace PSCmdlets
 {
     [Cmdlet(VerbsCommon.Get, "RandomTable")]
-    [OutputType(typeof(string))]
+    [OutputType(typeof(DataTable))]
     public class GetRandomTable : PSCmdlet
     {
 
@@ -18,24 +18,25 @@ namespace PSCmdlets
             ValueFromPipelineByPropertyName = true)]
         public int RowQuantity { get; set; } = 10;
 
-        DataTable table;
-        Random random;
+        readonly DataTable table;
+        readonly Random random;
 
         public GetRandomTable()
         {
             table = new DataTable("Person");
             random = new Random();
         }
-
         
         protected override void ProcessRecord()
         {
-            var result = new StringBuilder();
+            table.AddColumnsFromClass(typeof(Person));
+
             for(var i=0; i < RowQuantity; i++)
             {
-                result.Append($" ========\n{new Person(random).ToString()}\n\n\n");
+                table.AddRowFromObject(new Person(random));
             }
-            WriteObject(result.ToString());
+
+            WriteObject(table);
         }
     }
 }
