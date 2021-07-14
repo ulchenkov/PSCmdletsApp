@@ -3,8 +3,6 @@ namespace PSCmdlets
 {
     internal partial class Person
     {
-        internal enum Genders { Male, Female }
-
         const int MINIMUM_AGE = 16;
         const int MAXIMUM_AGE = 76;
 

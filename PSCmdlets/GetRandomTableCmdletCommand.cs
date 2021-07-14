@@ -8,6 +8,7 @@ namespace PSCmdlets
 {
     [Cmdlet(VerbsCommon.Get, "RandomTable")]
     [OutputType(typeof(DataTable))]
+    [Alias("grt")]
     public class GetRandomTable : PSCmdlet
     {
 
