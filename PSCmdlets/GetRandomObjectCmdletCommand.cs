@@ -55,7 +55,7 @@ namespace PSCmdlets
                 case WorkModes.LimitByQuntity:
                     return itterationCounter<Limit? true : false;
                 case WorkModes.LimitByTime:
-                    return DateTime.Now.Subtract(startTime).TotalMilliseconds<Limit? true : false;
+                    return DateTime.Now.Subtract(startTime).TotalSeconds<Limit? true : false;
                 default:
                     return false;
             }
