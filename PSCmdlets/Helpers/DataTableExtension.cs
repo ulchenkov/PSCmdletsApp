@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Reflection;
-using System.Text;
 
-namespace PSCmdlets
+namespace ETL
 {
     public static class DataTableExtension
     {
@@ -16,7 +13,7 @@ namespace PSCmdlets
             var properties = theClass.GetProperties();
             foreach(var property in properties)
             {
-                table.Columns.Add(property.Name, property.PropertyType.IsEnum ? typeof(string) : property.PropertyType);
+                table.Columns.Add(property.Name, property.PropertyType);
             }
         }
 
@@ -26,13 +23,10 @@ namespace PSCmdlets
                 throw new ArgumentNullException(nameof(obj), "The object must not be null");
 
             var row = table.NewRow();
-            foreach(DataColumn column in table.Columns)
+            foreach (DataColumn column in table.Columns)
             {
-                var prop = obj.GetType().GetProperty(column.ColumnName);
-
-                row[column.ColumnName] = prop.PropertyType.IsEnum ?
-                        Enum.GetNames(prop.PropertyType)[(int)prop.GetValue(obj)]
-                        : prop.GetValue(obj);
+                var value = obj.GetType().GetProperty(column.ColumnName).GetValue(obj);
+                row[column.ColumnName] = value;
             }
             table.Rows.Add(row);
         }

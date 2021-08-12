@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PSCmdlets
+namespace ETL
 {
     public static class RandomExtension
     {

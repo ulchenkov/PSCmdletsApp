@@ -1,64 +1,56 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Management.Automation;
 using System.Threading;
-using System.Text;
 
-namespace PSCmdlets
+namespace ETL
 {
     [Cmdlet(VerbsCommon.Get, "RandomObject")]
-    [OutputType(typeof(DataTable))]
+    [OutputType(typeof(PersonExtended))]
+    [OutputType(typeof(Person))]
     [Alias("gro")]
-    public class GetRandomObject : PSCmdlet
+    public partial class GetRandomObject : PSCmdlet
     {
-        [Parameter(Mandatory = false)]
-        public WorkModes WorkMode { get; set; } = WorkModes.LimitByQuntity;
-
         [Parameter(Position = 0, Mandatory = false)]
         public int Limit { get; set; } = 10;
 
         [Parameter(Mandatory = false)]
-        public int MinTimeLag { get; set; } = 1;
+        public int Lag { get; set; } = 0;
 
         [Parameter(Mandatory = false)]
-        public int MaxTimeLag { get; set; } = 1000;
+        public SwitchParameter Slow { get; set; }
 
-        readonly Random random;
+        [Parameter(Mandatory = false)]
+        public SwitchParameter Small { get; set; }
 
-        public GetRandomObject()
+        Random random;
+
+        protected override void BeginProcessing()
         {
+            base.BeginProcessing();
             random = new Random();
+            if (Slow.IsPresent)
+            {
+                Lag = 1000;
+            }
         }
-        
+
         protected override void ProcessRecord()
         {
-            var startTime = DateTime.Now;
-            var itterationCounter = 0;
+            IEnumerable<object> persons = Small.IsPresent ? 
+                Generator.GetPersons<Person>(random) : 
+                Generator.GetPersons<PersonExtended>(random);
 
-            while(CanContinue(startTime, itterationCounter))
+            var personIterator = persons.GetEnumerator();
+            var iterationCounter = 0;
+
+            while (iterationCounter < Limit)
             {
-                WriteObject(new Person(random));
-                itterationCounter++;
-                if(WorkMode==WorkModes.Infinite || WorkMode == WorkModes.LimitByTime)
-                {
-                    Thread.Sleep(random.Next(MinTimeLag, MaxTimeLag));
-                }
+                personIterator.MoveNext();
+                WriteObject(personIterator.Current);
+                iterationCounter++;
+                Thread.Sleep(Lag);
             }
         }
-        private bool CanContinue(DateTime startTime, int itterationCounter)
-        {
-            switch (WorkMode)
-            {
-                case WorkModes.Infinite:
-                    return true;
-                case WorkModes.LimitByQuntity:
-                    return itterationCounter<Limit? true : false;
-                case WorkModes.LimitByTime:
-                    return DateTime.Now.Subtract(startTime).TotalSeconds<Limit? true : false;
-                default:
-                    return false;
-            }
-}
     }
 }
