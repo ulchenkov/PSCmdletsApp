@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Management.Automation;
 using System.Threading;
 
@@ -8,6 +9,7 @@ namespace ETL
     [Cmdlet(VerbsCommon.Get, "RandomObject")]
     [OutputType(typeof(PersonExtended))]
     [OutputType(typeof(Person))]
+    [OutputType(typeof(IDataReader))]
     [Alias("gro")]
     public partial class GetRandomObject : PSCmdlet
     {
@@ -23,6 +25,9 @@ namespace ETL
         [Parameter(Mandatory = false)]
         public SwitchParameter Small { get; set; }
 
+        [Parameter(Mandatory = false)]
+        public SwitchParameter GetIDataReader { get; set; }
+
         Random random;
 
         protected override void BeginProcessing()
@@ -37,19 +42,26 @@ namespace ETL
 
         protected override void ProcessRecord()
         {
-            IEnumerable<object> persons = Small.IsPresent ? 
-                Generator.GetPersons<Person>(random) : 
+            IEnumerable<object> persons = Small.IsPresent ?
+                Generator.GetPersons<Person>(random) :
                 Generator.GetPersons<PersonExtended>(random);
 
-            var personIterator = persons.GetEnumerator();
-            var iterationCounter = 0;
-
-            while (iterationCounter < Limit)
+            if (GetIDataReader.IsPresent)
             {
-                personIterator.MoveNext();
-                WriteObject(personIterator.Current);
-                iterationCounter++;
-                Thread.Sleep(Lag);
+                WriteObject(Generator.GetIDataReader(persons));
+            }
+            else
+            {
+                var personIterator = persons.GetEnumerator();
+                var iterationCounter = 0;
+
+                while (iterationCounter < Limit)
+                {
+                    personIterator.MoveNext();
+                    WriteObject(personIterator.Current);
+                    iterationCounter++;
+                    Thread.Sleep(Lag);
+                }
             }
         }
     }

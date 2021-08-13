@@ -15,6 +15,9 @@ namespace ETL
         [Parameter(Mandatory = false)]
         public SwitchParameter Small { get; set; }
 
+        [Parameter(Mandatory = false)]
+        public SwitchParameter UseFastMember { get; set; }
+
         DataTable table;
         Random random;
 
@@ -31,12 +34,12 @@ namespace ETL
 
             for (var i = 0; i < Limit; i++)
             {
-                table.AddRowFromObject(Small.IsPresent ? new Person(random) : new PersonExtended(random));
+                table.AddRowFromObject(Small.IsPresent ? new Person(random) : new PersonExtended(random), UseFastMember.IsPresent);
             }
 
             WriteObject(table);
         }
 
-       
+
     }
 }

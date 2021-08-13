@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using FastMember;
 
 namespace ETL
 {
@@ -13,6 +15,11 @@ namespace ETL
                 {
                     yield return (T)Activator.CreateInstance(typeof(T), new object[] { random });
                 }
+            }
+
+            public static IDataReader GetIDataReader(IEnumerable<object> list)
+            {
+                return ObjectReader.Create(list);
             }
         }
     }
