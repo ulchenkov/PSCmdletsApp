@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Data;
 using System.Management.Automation;
-using System.Xml.Linq;
 
 namespace ETL
 {
     [Cmdlet(VerbsCommon.Get, "HtmlTable")]
+    [OutputType(typeof(DataTable))]
     [Alias("ght")]
-    internal class NewHtmlTable : PSCmdlet
+    public class GetHtmlTable : PSCmdlet
     {
         [Parameter(Position = 0, Mandatory = true)]
         public DataTable dataTable { get; set; }
@@ -24,6 +24,7 @@ namespace ETL
                 WriteDebug(output);
 
             }
+            //WriteObject(dataTable);
         }
     }
 }
