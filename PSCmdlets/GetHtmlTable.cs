@@ -12,6 +12,9 @@ namespace ETL
         [Parameter(Position = 0, Mandatory = true)]
         public DataTable dataTable { get; set; }
 
+        [Parameter(Position = 1, Mandatory = true)]
+        public ScriptBlock ScriptBlock { get; set; }
+
         protected override void ProcessRecord()
         {
             foreach (DataRow row in dataTable.Rows)
@@ -21,10 +24,14 @@ namespace ETL
                 {
                     output = $"{output} | {row[column]}";
                 }
-                WriteDebug(output);
-
+                WriteVerbose(output);
             }
-            //WriteObject(dataTable);
+            var hh = ScriptBlock.Invoke(new String[] {"First", "Second"});
+            foreach(var h in hh)
+            {
+                WriteObject(h);
+            }
+            
         }
     }
 }
